@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wode_titles">
+        <item>订单管理</item>
+        <item>个人资料</item>
+        <item>收货地址</item>
+        <item>关于我们</item>
+    </string-array>
+    <integer-array name="wode_images">
+        <item>@drawable/dingdanguanli</item>
+        <item>@drawable/gerenziliao</item>
+        <item>@drawable/shouhuodizhi</item>
+        <item>@drawable/guanyuwomen</item>
+    </integer-array>
+</resources>

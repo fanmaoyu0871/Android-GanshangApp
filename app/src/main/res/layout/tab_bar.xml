@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+    <RadioGroup android:id="@+id/tabbar_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_shouye"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/tabbar_shouye"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:text="@string/tab_shouye"
+            android:textSize="@dimen/tab_textsize"
+            android:textColor="@drawable/tabbar_textcolor"
+            android:checked="true"
+            android:background="@color/white"/>
+
+        <RadioButton
+            android:id="@+id/radio_gouwuche"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/tabbar_gouwuche"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:text="@string/tab_gouwuche"
+            android:textSize="@dimen/tab_textsize"
+            android:textColor="@drawable/tabbar_textcolor"
+            android:background="@color/white"/>
+
+        <RadioButton
+            android:id="@+id/radio_wode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/tabbar_wode"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:text="@string/tab_wode"
+            android:textSize="@dimen/tab_textsize"
+            android:textColor="@drawable/tabbar_textcolor"
+            android:background="@color/white"/>
+    </RadioGroup>
+
+</LinearLayout>
