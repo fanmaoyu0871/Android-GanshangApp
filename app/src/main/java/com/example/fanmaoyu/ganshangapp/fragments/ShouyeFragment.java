@@ -79,11 +79,10 @@ public class ShouyeFragment extends Fragment {
         shouye_listview.setHeaderDividersEnabled(false);
 
         //--------------------------加载网络请求----------------------------
-//        this.loadData();
+        this.loadData();
 
         return view;
     }
-
 
     private void loadData(){
 
@@ -111,7 +110,7 @@ public class ShouyeFragment extends Fragment {
         };
 
         //加载首页数据
-        Networking networking = new Networking(new Networking.NetResponseInterface() {
+        Networking networking = new Networking(this.getActivity(), new Networking.NetResponseInterface() {
 
             @Override
             public void successCallback(JsonElement jsonElement) {

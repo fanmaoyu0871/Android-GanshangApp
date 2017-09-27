@@ -1,12 +1,12 @@
 package com.example.fanmaoyu.ganshangapp;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 
@@ -14,13 +14,10 @@ import com.example.fanmaoyu.ganshangapp.fragments.GouwucheFragment;
 import com.example.fanmaoyu.ganshangapp.fragments.ShouyeFragment;
 import com.example.fanmaoyu.ganshangapp.fragments.WodeFragment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         this.showFragment("ShouyeFragment");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //登录成功返回数据
+        if(requestCode == 100 && resultCode == 100){
+
+        }
     }
 
     private void hideFragment(){

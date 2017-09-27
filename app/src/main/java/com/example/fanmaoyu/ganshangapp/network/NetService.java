@@ -25,4 +25,8 @@ public interface NetService {
     @FormUrlEncoded
     @POST("order/ShopCart/")
     Call<ResponseBody> gouwucheReq(@FieldMap HashMap<String, String> params);
+
+    @FormUrlEncoded
+    @POST("user/Login/")
+    Call<ResponseBody> loginReq(@FieldMap HashMap<String, String> params);
 }

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/navigation_bar"></include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:scaleType="center"
+                    android:src="@drawable/shoujihaoma" />
+
+                <TextView
+                    android:id="@+id/getVerifyCodeBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="19dp"
+                    android:layout_marginRight="19dp"
+                    android:background="@drawable/shape_corner"
+                    android:padding="5dp"
+                    android:text="获取验证码"
+                    android:textColor="@color/white" />
+
+                <EditText
+                    android:id="@+id/reg_phone_editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/imageView7"
+                    android:layout_toLeftOf="@+id/getVerifyCodeBtn"
+                    android:layout_toRightOf="@+id/imageView7"
+                    android:background="@null"
+                    android:drawablePadding="5dp"
+                    android:ems="10"
+                    android:hint="手机号码"
+                    android:inputType="phone"
+                    android:paddingLeft="5dp"
+                    android:textColorHint="@color/hintColor"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <EditText
+                    android:id="@+id/reg_verifyCode_editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/imageView8"
+                    android:layout_toRightOf="@+id/imageView8"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="验证码"
+                    android:textSize="14sp"
+                    android:paddingLeft="5dp"
+                    android:textColorHint="@color/hintColor"
+                    android:inputType="textPersonName" />
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:scaleType="center"
+                    android:src="@drawable/yanzhengma" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <EditText
+                    android:id="@+id/reg_pwd_editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/imageView11"
+                    android:layout_toRightOf="@+id/imageView11"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="设置密码"
+                    android:inputType="textPassword"
+                    android:paddingLeft="5dp"
+                    android:textColorHint="@color/hintColor"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/shezhimima" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <EditText
+                    android:id="@+id/reg_nickname_editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/imageView6"
+                    android:layout_toRightOf="@+id/imageView6"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="输入昵称"
+                    android:textColorHint="@color/hintColor"
+                    android:textSize="14sp"
+                    android:paddingLeft="5dp"
+                    android:inputType="textPersonName" />
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/shurunicheng" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/regBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="完成"
+                android:background="@drawable/shape_corner"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

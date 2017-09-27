@@ -1,5 +1,8 @@
 package com.example.fanmaoyu.ganshangapp.network;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.example.fanmaoyu.ganshangapp.constant.ServiceConstant;
 import com.example.fanmaoyu.ganshangapp.tools.MathUtils;
 import com.google.gson.JsonElement;
@@ -33,8 +36,9 @@ public class Networking{
     private static Networking networking = null;
     private NetService service;
     private NetResponseInterface callback;
+    private Context context;
 
-    public Networking(NetResponseInterface callback){
+    public Networking(Context context, NetResponseInterface callback){
 
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -50,6 +54,7 @@ public class Networking{
 
         this.service = retrofit.create(NetService.class);
         this.callback = callback;
+        this.context = context;
     }
 
     private HashMap<String, String> sortParams(HashMap<String, String> params){
@@ -81,42 +86,49 @@ public class Networking{
             call = this.service.categoryReq(sortedParams);
         }else if(serviceName.equals("gouwucheReq")){
             call = this.service.gouwucheReq(sortedParams);
+        }else if(serviceName.equals("loginReq")){
+            call = this.service.loginReq(sortedParams);
         }
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<ResponseBody> call, final Response<ResponseBody> response) {
 
-                String responseJson = null;
-                try {
-                    responseJson = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                JsonParser jsonParser = new JsonParser();
-                JsonObject jsonObject = jsonParser.parse(responseJson).getAsJsonObject();
-
-                final String code = jsonObject.get("code").getAsString();
-                final String msg = jsonObject.get("msg").getAsString();
-                final JsonElement jsonElement = jsonObject.get("data");
 
                 new Thread(new Runnable() {
 
                     @Override
                     public void run() {
 
+                        String responseJson = null;
+
+                        try {
+                            responseJson = response.body().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        JsonParser jsonParser = new JsonParser();
+                        JsonObject jsonObject = jsonParser.parse(responseJson).getAsJsonObject();
+
+                        final String code = jsonObject.get("code").getAsString();
+                        final String msg = jsonObject.get("msg").getAsString();
+                        final JsonElement jsonElement = jsonObject.get("data");
+
                         if(code.equals("Succ")){
                             Networking.this.callback.successCallback(jsonElement);
                         }else{
                             Networking.this.callback.failCallback(msg);
                         }
+
                     }
                 }).start();
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(Networking.this.context, "网络出错", Toast.LENGTH_SHORT).show();
             }
         });
     }

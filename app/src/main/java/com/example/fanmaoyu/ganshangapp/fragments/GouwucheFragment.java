@@ -75,7 +75,7 @@ public class GouwucheFragment extends Fragment {
         };
 
         //加载数据
-        Networking networking = new Networking(new Networking.NetResponseInterface() {
+        Networking networking = new Networking(this.getActivity(), new Networking.NetResponseInterface() {
             @Override
             public void successCallback(JsonElement jsonElement) {
 

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/navigation_bar"></include>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <EditText
+                    android:id="@+id/login_phone_editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/imageView8"
+                    android:layout_toRightOf="@+id/imageView8"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="手机号码"
+                    android:inputType="phone"
+                    android:paddingLeft="5dp"
+                    android:textColorHint="@color/hintColor"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:scaleType="center"
+                    android:src="@drawable/shoujihaoma" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <EditText
+                    android:id="@+id/login_pwd_editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/imageView11"
+                    android:layout_toRightOf="@+id/imageView11"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="密码"
+                    android:inputType="textPassword"
+                    android:paddingLeft="5dp"
+                    android:textColorHint="@color/hintColor"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:scaleType="center"
+                    app:srcCompat="@drawable/shezhimima" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/forgetPwdBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:gravity="end"
+                android:padding="5dp"
+                android:text="忘记密码？"
+                android:textColor="@color/mainThemeColor" />
+
+            <TextView
+                android:id="@+id/loginBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="登录"
+                android:background="@drawable/shape_corner"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
