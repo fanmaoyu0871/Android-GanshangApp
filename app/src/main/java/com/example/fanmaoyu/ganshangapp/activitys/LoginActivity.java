@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -16,12 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fanmaoyu.ganshangapp.R;
-import com.example.fanmaoyu.ganshangapp.constant.ServiceConstant;
+import com.example.fanmaoyu.ganshangapp.constant.UserinfoConstant;
+import com.example.fanmaoyu.ganshangapp.events.NetworkEvent;
+import com.example.fanmaoyu.ganshangapp.events.PageEvent;
 import com.example.fanmaoyu.ganshangapp.models.UserModel;
 import com.example.fanmaoyu.ganshangapp.network.Networking;
 import com.example.fanmaoyu.ganshangapp.tools.MathUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 
@@ -50,8 +54,51 @@ public class LoginActivity extends AppCompatActivity{
     @BindView(R.id.login_pwd_editText)
     EditText login_pwd_editText;
 
-    private Handler handler;
-    private SharedPreferences sharedPreferences = getSharedPreferences(ServiceConstant.PreferenceKey, Activity.MODE_PRIVATE);
+    private SharedPreferences sharedPreferences;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(NetworkEvent.LoginBtnEvent event) {
+        String code = event.getCode();
+
+        if (code.equals("Succ")) {
+
+            JsonElement jsonElement = event.getData();
+
+            if(jsonElement != null && jsonElement.isJsonObject()){
+                Gson gson = new Gson();
+                UserModel userModel = gson.fromJson(jsonElement, UserModel.class );
+                UserModel singleUserModel = UserModel.getInstance();
+                singleUserModel.setId(userModel.getId());
+                singleUserModel.setHeadpic(userModel.getHeadpic());
+                singleUserModel.setNickName(userModel.getNickName());
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(UserinfoConstant.Nickname, userModel.getNickName()); //昵称
+                editor.putString(UserinfoConstant.UserImageUrl, userModel.getHeadpic()); //头像
+                editor.putInt(UserinfoConstant.UserId, userModel.getId()); //id
+                editor.commit();
+
+                EventBus.getDefault().postSticky(new PageEvent.UserInfoEvent());
+
+                finish();
+            }
+        }else{
+            String errormsg = event.getMsg();
+            Toast.makeText(LoginActivity.this, errormsg, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @OnClick(R.id.loginBtn)
     public void loginAction(View view){
@@ -71,41 +118,13 @@ public class LoginActivity extends AppCompatActivity{
             return;
         }
 
+
         //18368808412 123123
-        Networking networking = new Networking(this, new Networking.NetResponseInterface() {
-            @Override
-            public void successCallback(JsonElement jsonElement) {
-                if(jsonElement != null && jsonElement.isJsonObject()){
-                    Gson gson = new Gson();
-                    UserModel userModel = gson.fromJson(jsonElement, UserModel.class );
-                    UserModel singleUserModel = UserModel.getInstance();
-                    singleUserModel = userModel;
-
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean(ServiceConstant.isLogin, true);
-
-                    Intent intent = new Intent();
-                    intent.putExtra("user", userModel);
-                    LoginActivity.this.setResult(100, intent);
-                    finish();
-                }
-            }
-
-            @Override
-            public void failCallback(String errormsg) {
-                Message message = new Message();
-                message.what = 0x02;
-                Bundle bundle = new Bundle();
-                bundle.putString("errormsg", errormsg);
-                message.setData(bundle);
-                LoginActivity.this.handler.sendMessage(message);
-            }
-        });
+        //登录-网络请求
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("mobile", this.login_phone_editText.getText().toString());
         params.put("pwd", MathUtils.MD5(this.login_pwd_editText.getText().toString()));
-        networking.startReq(params, "loginReq");
-
+        Networking.getInstance(this).startReq(params, "loginReq");
 
     }
 
@@ -127,18 +146,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        this.handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what){
-                    case 0x01:
-                        break;
-                    case 0x02:
-                        String errormsg = msg.getData().getString("errormsg");
-                        Toast.makeText(LoginActivity.this, errormsg, Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        };
+        this.sharedPreferences = getSharedPreferences(UserinfoConstant.PreferenceKey, Activity.MODE_PRIVATE);
+
     }
 }

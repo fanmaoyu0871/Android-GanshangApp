@@ -1,7 +1,11 @@
 package com.example.fanmaoyu.ganshangapp;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
 
+import com.example.fanmaoyu.ganshangapp.constant.UserinfoConstant;
+import com.example.fanmaoyu.ganshangapp.models.UserModel;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -29,5 +33,10 @@ public class App extends Application {
 
         Logger.addLogAdapter(new AndroidLogAdapter());
 
+        UserModel userModel = UserModel.getInstance();
+        SharedPreferences sharedPreferences = getSharedPreferences(UserinfoConstant.PreferenceKey, Activity.MODE_PRIVATE);
+        userModel.setNickName(sharedPreferences.getString(UserinfoConstant.Nickname, null));
+        userModel.setHeadpic(sharedPreferences.getString(UserinfoConstant.UserImageUrl, null));
+        userModel.setId(sharedPreferences.getInt(UserinfoConstant.UserId, 0));
     }
 }

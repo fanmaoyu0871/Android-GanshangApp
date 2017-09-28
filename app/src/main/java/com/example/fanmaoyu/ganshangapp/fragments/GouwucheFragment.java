@@ -1,24 +1,30 @@
 package com.example.fanmaoyu.ganshangapp.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fanmaoyu.ganshangapp.R;
-import com.example.fanmaoyu.ganshangapp.models.ShouyeModel;
+import com.example.fanmaoyu.ganshangapp.adapters.GouwucheAdapter;
+import com.example.fanmaoyu.ganshangapp.events.NetworkEvent;
+import com.example.fanmaoyu.ganshangapp.events.PageEvent;
+import com.example.fanmaoyu.ganshangapp.models.GouwucheModel;
+import com.example.fanmaoyu.ganshangapp.models.UserModel;
 import com.example.fanmaoyu.ganshangapp.network.Networking;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +47,75 @@ public class GouwucheFragment extends Fragment {
     @BindView(R.id.gouwuche_listview)
     ListView gouwuche_listview;
 
-    private Handler handler;
+    @BindView(R.id.empty_container)
+    LinearLayout empty_container;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(NetworkEvent.GouwucheReqEvent event){
+        String code = event.getCode();
+        if(code.equals("Succ")){
+            JsonElement jsonElement = event.getData();
+            if(jsonElement != null && jsonElement.isJsonObject()){
+
+                JsonArray jsonArray =  jsonElement.getAsJsonObject().getAsJsonArray("shopCart");
+                ArrayList<GouwucheModel> gouwuche_list = new ArrayList<GouwucheModel>();
+
+                for(JsonElement product : jsonArray){
+                    Gson gson = new Gson();
+                    GouwucheModel gouwucheModel = gson.fromJson(product, GouwucheModel.class);
+                    gouwuche_list.add(gouwucheModel);
+                }
+
+                GouwucheAdapter adapter = new GouwucheAdapter(GouwucheFragment.this.getActivity(), gouwuche_list);
+                this.gouwuche_listview.setAdapter(adapter);
+            }
+        }else{
+
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onRefreshEvent(PageEvent.GouwucheEvent event){
+
+        UserModel userModel = UserModel.getInstance();
+        if(userModel.getId() != 0){ //有user_id 就刷新
+            this.empty_container.setVisibility(View.INVISIBLE);
+            this.gouwuche_listview.setVisibility(View.VISIBLE);
+
+            //加载数据
+            this.loadData(userModel.getId() + "");
+        }else{
+            this.empty_container.setVisibility(View.VISIBLE);
+            this.gouwuche_listview.setVisibility(View.INVISIBLE);
+        }
+
+        //移除黏性事件
+        PageEvent.GouwucheEvent gouwucheEvent = EventBus.getDefault().getStickyEvent(PageEvent.GouwucheEvent.class);
+        if(gouwucheEvent != null){
+            EventBus.getDefault().removeStickyEvent(gouwucheEvent);
+        }
+    }
+
+
+    private void loadData(String userId){
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("userId", userId);
+        Networking.getInstance(this.getActivity()).startReq(params, "gouwucheReq");
+
+    }
 
     @Nullable
     @Override
@@ -54,58 +128,10 @@ public class GouwucheFragment extends Fragment {
         nav_left_imageview.setVisibility(View.INVISIBLE);
         nav_center_textview.setText("购物车");
 
-        //加载数据
-//        loadData();
+        this.gouwuche_listview.setVisibility(View.INVISIBLE);
+        this.empty_container.setVisibility(View.INVISIBLE);
 
         return view;
     }
 
-    private void loadData(){
-        //handler 处理
-        this.handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what){
-                    case 0x01:
-                        ArrayList<ShouyeModel.Product> product_list = msg.getData().getParcelableArrayList("category_list");
-
-                        break;
-                }
-            }
-        };
-
-        //加载数据
-        Networking networking = new Networking(this.getActivity(), new Networking.NetResponseInterface() {
-            @Override
-            public void successCallback(JsonElement jsonElement) {
-
-                if(jsonElement != null && jsonElement.isJsonArray()){
-
-                    JsonArray category_array = jsonElement.getAsJsonArray();
-
-                    //listview data
-                    ArrayList<ShouyeModel.Product> product_list = new ArrayList<ShouyeModel.Product>();
-                    Gson gson = new Gson();
-                    ArrayList<ShouyeModel.Product> tmp_list = gson.fromJson(category_array, new TypeToken<ArrayList<ShouyeModel.Product>>(){}.getType());
-                    product_list.addAll(tmp_list);
-
-                    Message msg = new Message();
-                    msg.what = 0x01;
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("gouwuche_list", product_list);
-                    msg.setData(bundle);
-                    GouwucheFragment.this.handler.sendMessage(msg);
-                }
-            }
-
-            @Override
-            public void failCallback(String errormsg) {
-
-            }
-        });
-
-
-        HashMap<String, String> params = new HashMap<String, String>();
-        networking.startReq(params, "categoryReq");
-    }
 }

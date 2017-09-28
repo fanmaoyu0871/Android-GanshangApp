@@ -16,7 +16,12 @@ import android.widget.TextView;
 import com.example.fanmaoyu.ganshangapp.R;
 import com.example.fanmaoyu.ganshangapp.activitys.LoginActivity;
 import com.example.fanmaoyu.ganshangapp.adapters.WodeAdapter;
-import com.orhanobut.logger.Logger;
+import com.example.fanmaoyu.ganshangapp.events.PageEvent;
+import com.example.fanmaoyu.ganshangapp.models.UserModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +40,31 @@ public class WodeFragment extends Fragment {
     @BindView(R.id.wode_listview)
     ListView wode_listview;
 
+    private HeaderView headerView;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onMessageEvent(PageEvent.UserInfoEvent event){
+
+        UserModel userModel = UserModel.getInstance();
+
+        if(userModel.getId() != 0) {
+            this.headerView.wode_name.setText(userModel.getNickName());
+            this.headerView.login_textview.setVisibility(View.INVISIBLE);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,8 +77,8 @@ public class WodeFragment extends Fragment {
         nav_center_textview.setText("我的");
 
         View mineHeaderView = LayoutInflater.from(this.getActivity()).inflate(R.layout.view_mineheader, wode_listview, false);
-        HeaderView headerView = new HeaderView(this.getActivity(), mineHeaderView);
-        headerView.bindEvent();
+        this.headerView = new HeaderView(this.getActivity(), mineHeaderView);
+        this.headerView.bindEvent();
 
         wode_listview.addHeaderView(mineHeaderView);
         wode_listview.setHeaderDividersEnabled(false);
@@ -57,14 +87,6 @@ public class WodeFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == 100 && resultCode == 100){
-            Logger.d("name ===>", data.getStringExtra("name"));
-        }
-    }
 
     public class HeaderView{
         @BindView(R.id.wode_name)

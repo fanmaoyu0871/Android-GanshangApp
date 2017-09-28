@@ -1,6 +1,5 @@
 package com.example.fanmaoyu.ganshangapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
@@ -10,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 
+import com.example.fanmaoyu.ganshangapp.events.PageEvent;
 import com.example.fanmaoyu.ganshangapp.fragments.GouwucheFragment;
 import com.example.fanmaoyu.ganshangapp.fragments.ShouyeFragment;
 import com.example.fanmaoyu.ganshangapp.fragments.WodeFragment;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 
@@ -48,9 +50,15 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.radio_gouwuche:
                             MainActivity.this.showFragment("GouwucheFragment");
+
+                            //发送是否要刷新购物车的消息
+                            EventBus.getDefault().postSticky(new PageEvent.GouwucheEvent());
+
                             break;
                         case R.id.radio_wode:
                             MainActivity.this.showFragment("WodeFragment");
+
+                            EventBus.getDefault().postSticky(new PageEvent.UserInfoEvent());
                             break;
                         default:
                             break;
@@ -61,15 +69,6 @@ public class MainActivity extends AppCompatActivity {
         this.showFragment("ShouyeFragment");
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //登录成功返回数据
-        if(requestCode == 100 && resultCode == 100){
-
-        }
-    }
 
     private void hideFragment(){
         for(String key : this.fragmentHashMap.keySet()){

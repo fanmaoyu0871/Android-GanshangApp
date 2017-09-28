@@ -4,10 +4,13 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.fanmaoyu.ganshangapp.constant.ServiceConstant;
+import com.example.fanmaoyu.ganshangapp.events.NetworkEvent;
 import com.example.fanmaoyu.ganshangapp.tools.MathUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -28,17 +31,11 @@ import retrofit2.Retrofit;
 
 public class Networking{
 
-    public interface NetResponseInterface{
-        void successCallback(JsonElement jsonElement);
-        void failCallback(String errormsg);
-    }
-
-    private static Networking networking = null;
     private NetService service;
-    private NetResponseInterface callback;
-    private Context context;
+    private static Context context;
+    private static Networking networking = null;
 
-    public Networking(Context context, NetResponseInterface callback){
+    private Networking(){
 
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -53,8 +50,17 @@ public class Networking{
                 .build();
 
         this.service = retrofit.create(NetService.class);
-        this.callback = callback;
-        this.context = context;
+    }
+
+
+    public static Networking getInstance(Context context1){
+        if(networking == null){
+            networking = new Networking();
+        }
+
+        context = context1;
+
+        return networking;
     }
 
     private HashMap<String, String> sortParams(HashMap<String, String> params){
@@ -75,9 +81,9 @@ public class Networking{
         return params;
     }
 
-    public void startReq(HashMap<String, String> params, String serviceName){
+    public void startReq(HashMap<String, String> params, final String serviceName){
 
-        HashMap<String, String> sortedParams = this.sortParams(params);
+        final HashMap<String, String> sortedParams = this.sortParams(params);
         Call<ResponseBody> call = null;
 
         if(serviceName.equals("shouyeReq")){
@@ -93,8 +99,6 @@ public class Networking{
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, final Response<ResponseBody> response) {
-
-
 
                 new Thread(new Runnable() {
 
@@ -116,12 +120,19 @@ public class Networking{
                         final String msg = jsonObject.get("msg").getAsString();
                         final JsonElement jsonElement = jsonObject.get("data");
 
-                        if(code.equals("Succ")){
-                            Networking.this.callback.successCallback(jsonElement);
-                        }else{
-                            Networking.this.callback.failCallback(msg);
+
+                        NetworkEvent networkEvent = null;
+                        if(serviceName.equals("shouyeReq")){
+                            networkEvent = new NetworkEvent.ShouyeReqEvent(code, msg, jsonElement);
+                        }else if(serviceName.equals("categoryReq")){
+
+                        }else if(serviceName.equals("gouwucheReq")){
+                            networkEvent = new NetworkEvent.GouwucheReqEvent(code, msg, jsonElement);
+                        }else if(serviceName.equals("loginReq")){
+                            networkEvent = new NetworkEvent.LoginBtnEvent(code, msg, jsonElement);
                         }
 
+                        EventBus.getDefault().post(networkEvent);
                     }
                 }).start();
             }
